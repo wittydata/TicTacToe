@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 
-import { DRAW, LOSE, WIN } from '../core'
+import { AI_MODE, DRAW, LOSE, WIN } from '../core'
 
 export default class Display extends Component {
   render () {
-    const { count, board, result } = this.props.round
+    const { count, board, result } = this.props
 
     return (
       <View style={styles.container}>
@@ -29,7 +29,7 @@ export default class Display extends Component {
   }
 
   newColumn (i, j, cell) {
-    const { endTurn } = this.props
+    const { endTurn, endAiTurn, mode } = this.props
     const key = i * 3 + j
     const style = [styles.boardColumn]
 
@@ -47,9 +47,10 @@ export default class Display extends Component {
           activeOpacity={0}
           onPress={() => {
             endTurn(key)
+            mode === AI_MODE && setTimeout(() => endAiTurn(), 333)
           }}
           style={styles.boardTouch}
-          underlayColor={'#8080807f'}
+          underlayColor={'#9b5e5e7f'}
         >
           <Text key={key} style={styles.boardCell}>{cell}</Text>
         </TouchableHighlight>
@@ -86,13 +87,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   boardCell: {
-    color: '#ffdf80',
+    color: '#ec6e56',
     fontSize: 60,
     textAlign: 'center'
   },
   boardColumn: {
     alignItems: 'center',
-    borderColor: '#87cafe',
+    borderColor: '#71b49a',
     borderBottomWidth: 2,
     borderRightWidth: 2,
     flexDirection: 'row',
@@ -116,13 +117,13 @@ const styles = StyleSheet.create({
     borderRightWidth: 0
   },
   result: {
-    color: '#9292fe',
+    color: '#f0eeda',
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center'
   },
   title: {
-    color: '#9292fe',
+    color: '#f0eeda',
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center'

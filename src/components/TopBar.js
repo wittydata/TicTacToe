@@ -29,10 +29,10 @@ const styles = StyleSheet.create({
     marginTop: 4
   },
   button: {
-    borderColor: '#bc8afe',
+    borderColor: '#f0eeda',
     borderRadius: 6,
     borderWidth: 1,
-    color: '#bc8afe',
+    color: '#f0eeda',
     fontSize: 21,
     textAlign: 'center',
     width: 75

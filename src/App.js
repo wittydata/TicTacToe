@@ -2,14 +2,12 @@ import React, { Component } from 'react'
 import { AppRegistry, Navigator } from 'react-native'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import PushNotification from 'react-native-push-notification'
 
 import Home from './containers/Home'
 import Game from './containers/Game'
 import reducer from './reducers'
-import { initialState } from './core'
 
-const store = createStore(reducer, initialState())
+const store = createStore(reducer)
 
 export default class TicTacToe extends Component {
   render () {
@@ -28,18 +26,6 @@ export default class TicTacToe extends Component {
         />
       </Provider>
     )
-  }
-
-  componentDidMount () {
-    PushNotification.configure({
-      onRegister: function (token) {
-        console.log('TOKEN:', token)
-      },
-      onNotification: function (notification) {
-        console.log('NOTIFICATION:', notification)
-      },
-      senderID: '557348270362'
-    })
   }
 }
 

@@ -2,53 +2,80 @@ const EMPTY_CELL = ''
 const O_TURN = 'O'
 const X_TURN = 'X'
 
+export const AI_MODE = 'ai'
+export const LOCAL_MODE = 'local'
 export const DRAW = 'draw'
 export const LOSE = 'lose'
 export const WIN = 'win'
 
-export function endTurn (state, move) {
-  const newRound = { ...state.round }
-  const newStats = { ...state.stats }
-  const newBoard = [ ...newRound.board ]
+export function endTurn (currentState, move) {
+  const mode = currentState.mode
+  const newState = currentState[mode]
+  const newBoard = [ ...newState.board ]
+  let { moveCount, result, turn, draw, lose, win } = newState
 
-  if (newRound.moveCount > newBoard.length) {
-    return state
+  if (result !== '') {
+    return currentState
   }
 
   if (newBoard[move] === EMPTY_CELL) {
-    newBoard[move] = newRound.turn
-    newRound.board = newBoard
-    newRound.turn = nextTurn(newRound.turn)
+    newBoard[move] = turn
+    turn = nextTurn(turn)
 
-    if (newRound.moveCount > 3) {
-      const result = getResult(newBoard)
-      newRound.result = result
+    if (moveCount > 3) {
+      result = getResult(newBoard)
 
-      if (result === '') {
-        newRound.moveCount += 1
-      } else {
-        if (result === DRAW) { newStats.draw += 1 }
-        if (result === LOSE) { newStats.lose += 1 }
-        if (result === WIN) { newStats.win += 1 }
-
-        newRound.moveCount = 10
+      if (result === DRAW) {
+        draw += 1
       }
-    } else {
-      newRound.moveCount += 1
+
+      if (result === LOSE) {
+        lose += 1
+      }
+
+      if (result === WIN) {
+        win += 1
+      }
     }
+
+    moveCount += 1
   }
 
-  return { ...state, round: newRound, stats: newStats }
+  currentState[mode] = { ...newState, board: newBoard, moveCount, result, turn, draw, lose, win }
+  return { ...currentState }
 }
 
-export function nextRound (state) {
-  const newRound = round()
-  newRound.count = state.round.count + 1
-  return { ...state, round: newRound }
+export function endAiTurn (currentState) {
+  const state = currentState[AI_MODE]
+  const { board, result } = state
+
+  if (state.turn === X_TURN) {
+    return currentState
+  }
+
+  var availableNextMoves = getAvailableMoves(board).map((move) => {
+    return { move, score: minimaxValue(endTurn({ ...currentState }, move)) }
+  })
+
+  availableNextMoves.sort((a, b) => {
+    return a.score - b.score
+  })
+
+  if (result !== '') {
+    return currentState
+  }
+
+  return endTurn(currentState, availableNextMoves[0].move)
 }
 
 export function initialState () {
-  return { round: round(), stats: stats() }
+  return { ai: state(), local: state(), mode: AI_MODE }
+}
+
+export function nextRound (currentState) {
+  const newState = currentState[currentState.mode]
+  currentState[currentState.mode] = { ...newState, count: newState.count + 1, board: board(), moveCount: 0, result: '', turn: X_TURN }
+  return { ...currentState }
 }
 
 function board () {
@@ -61,16 +88,14 @@ function board () {
   return board
 }
 
-function round () {
-  return { count: 1, board: board(), moveCount: 0, result: '', turn: X_TURN }
-}
-
-function stats () {
-  return { draw: 0, lose: 0, win: 0 }
-}
-
 function nextTurn (turn) {
   return turn === X_TURN ? O_TURN : X_TURN
+}
+
+function getAvailableMoves (board) {
+  const avaialableMoves = []
+  board.forEach((cell, i) => (cell === EMPTY_CELL) && avaialableMoves.push(i))
+  return avaialableMoves
 }
 
 function getResult (board) {
@@ -113,5 +138,58 @@ function getResult (board) {
     return ''
   } else {
     return DRAW
+  }
+}
+
+function getScore (state) {
+  const { result, moveCount } = state
+
+  if (result === WIN) {
+    return 10 - moveCount
+  } else if (result === LOSE) {
+    return -10 + moveCount
+  } else {
+    return 0
+  }
+}
+
+function state () {
+  return { count: 1, board: board(), moveCount: 0, result: '', turn: X_TURN, draw: 0, lose: 0, win: 0 }
+}
+
+function minimaxValue (currentState) {
+  const state = currentState[AI_MODE]
+  const { board, turn } = state
+
+  if (getResult(board) !== '') {
+    return getScore(state)
+  } else {
+    let moveScore
+
+    if (turn === 'X') {
+      moveScore = -1000
+    } else {
+      moveScore = 1000
+    }
+
+    let availableNextMoves = getAvailableMoves(board).map((move) => {
+      return endTurn({ ...currentState }, move)
+    })
+
+    availableNextMoves.forEach((nextMove) => {
+      const nextScore = minimaxValue(nextMove)
+
+      if (turn === 'X') {
+        if (nextScore > moveScore) {
+          moveScore = nextScore
+        }
+      } else {
+        if (nextScore < moveScore) {
+          moveScore = nextScore
+        }
+      }
+    })
+
+    return moveScore
   }
 }

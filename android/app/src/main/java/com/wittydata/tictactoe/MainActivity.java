@@ -1,4 +1,4 @@
-package com.tictactoe;
+package com.wittydata.tictactoe;
 
 import com.facebook.react.ReactActivity;
 

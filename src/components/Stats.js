@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 
 export default class Stats extends Component {
   render () {
-    const { draw, lose, win } = this.props.stats
+    const { draw, lose, win } = this.props
     return (
       <View style={styles.container}>
         <Text style={styles.text}>
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   text: {
-    color: '#9292fe',
+    color: '#f0eeda',
     fontSize: 21
   }
 })

@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 export default class Choices extends Component {
   render () {
-    const { nextRound, round: { result, turn } } = this.props
+    const { nextRound, result, turn } = this.props
 
     if (result === '') {
       return (
@@ -34,10 +34,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   button: {
-    borderColor: '#bc8afe',
+    borderColor: '#f0eeda',
     borderRadius: 6,
     borderWidth: 1,
-    color: '#bc8afe',
+    color: '#f0eeda',
     fontSize: 21,
     marginBottom: 20,
     marginTop: 20,
@@ -45,13 +45,13 @@ const styles = StyleSheet.create({
     width: 180
   },
   description: {
-    color: '#9292fe',
+    color: '#f0eeda',
     fontSize: 42,
     fontWeight: 'bold',
     textAlign: 'center'
   },
   title: {
-    color: '#9292fe',
+    color: '#f0eeda',
     fontSize: 21,
     textAlign: 'center'
   }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { connect } from 'react-redux'
 
+import { setMode } from '../actions'
 import Menu from '../components/Menu'
 
 class Home extends Component {
@@ -20,7 +21,9 @@ const mapStateToProps = (state) => ({
   ...state
 })
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+  setMode
+}
 
 export default connect(
   mapStateToProps,
@@ -30,12 +33,12 @@ export default connect(
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: 'ghostwhite',
+    backgroundColor: '#3f3e5c',
     flex: 1,
     justifyContent: 'center'
   },
   title: {
-    color: '#9292fe',
+    color: '#ec6e56',
     fontSize: 42,
     fontWeight: 'bold',
     marginBottom: 50
